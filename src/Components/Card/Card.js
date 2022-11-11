@@ -1,34 +1,68 @@
 import styled from "styled-components";
 import { FaBookmark } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 
-export default function Card({ id, name, charackterPic }) {
-  const { image } = charackterPic;
-  //const { status, species, gender } = characterProps;
+export default function Card({
+  characters,
+  characterId,
+  name,
+  image,
+  gender,
+  status,
+  species,
+}) {
   const [isShown, setIsShown] = useState(false);
-  const handleClick = () => {
-    setIsShown((current) => !current);
-  };
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-  return (
-    <CharacterCard>
-      <Bookmarked>
-        <FaBookmark />
-      </Bookmarked>
-      <Picture src={image} alt={name}></Picture>
-      <NameHeading>{name}</NameHeading>
-      <InfoButton onClick={handleClick}>
-        {isShown ? "Close Information" : "More Information"}
-      </InfoButton>
-      {isShown && (
-        <TagList>
-          <li>status:</li>
-          <li>species:</li>
-          <li>gender:</li>
-        </TagList>
-      )}
-    </CharacterCard>
-  );
+  console.log(id);
+  console.log(characters);
+  if (id) {
+    const handleClick = (event) => {
+      // 👇️ toggle shown state
+      setIsShown((current) => !current);
+    };
+    const characterToDisplay = characters.find(
+      (character) => character.id === Number(id)
+    );
+    console.log(characterToDisplay);
+    return (
+      <CharacterCard>
+        <Bookmarked>
+          <FaBookmark />
+        </Bookmarked>
+        <Picture
+          src={characterToDisplay.image}
+          alt={characterToDisplay.name}
+        ></Picture>
+        <NameHeading>{characterToDisplay.name}</NameHeading>
+        <InfoButton onClick={handleClick}>
+          {isShown ? "Close Information" : "More Information"}
+        </InfoButton>
+        {isShown && (
+          <TagList>
+            <li>status: {characterToDisplay.status}</li>
+            <li>species: {characterToDisplay.species}</li>
+            <li>gender: {characterToDisplay.gender}</li>
+          </TagList>
+        )}
+      </CharacterCard>
+    );
+  } else {
+    return (
+      <CharacterCard>
+        <Bookmarked>
+          <FaBookmark />
+        </Bookmarked>
+        <Picture src={image} alt={name}></Picture>
+        <NameHeading>{name}</NameHeading>
+        <NavigateButton onClick={() => navigate("/characters/" + characterId)}>
+          More Information
+        </NavigateButton>
+      </CharacterCard>
+    );
+  }
 }
 
 const CharacterCard = styled.article`
@@ -65,7 +99,7 @@ const Bookmarked = styled.div`
     color: blue;
   }
 `;
-const InfoButton = styled.button`
+const NavigateButton = styled.button`
   width: 150px;
   height: 35px;
   background-color: blue;
@@ -74,13 +108,22 @@ const InfoButton = styled.button`
   border: none;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 `;
+const InfoButton = styled.button`
+  width: 150px;
+  height: 35px;
+  background-color: blue;
+  color: white;
+  border-radius: 25px;
+  border: none;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  const TagList = styled.ul
+`;
 const TagList = styled.ul`
-display:flex;
-justify-content center;
+  display: flex;
+  justify-content: center;
 
-li{
-    list-style-type:none;
+  li {
+    list-style-type: none;
     margin: 5px 5px;
-    
-}
+  }
 `;

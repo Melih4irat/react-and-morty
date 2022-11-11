@@ -1,17 +1,22 @@
 import styled from "styled-components";
-import useFetch from "../../Hooks/useFetch";
 import Card from "../Card/Card";
 
-export default function CardGrid() {
-  const [characters, setCharacters] = useFetch(
-    "https://rickandmortyapi.com/api/character",
-    "results"
-  );
-
+export default function CardGrid({ characters }) {
   return (
     <CardSection>
-      {characters.map(({ id, name, ...charackterPic }) => {
-        return <Card key={id} name={name} charackterPic={charackterPic} />;
+      {characters.map(({ id, name, image, gender, status, species }) => {
+        return (
+          <Card
+            characters={characters}
+            characterId={id}
+            key={id}
+            name={name}
+            image={image}
+            gender={gender}
+            status={status}
+            species={species}
+          />
+        );
       })}
     </CardSection>
   );
